@@ -1,0 +1,26 @@
+{
+  "name": "browser",
+  "version": "0.1.0",
+  "description": "A browser made with electron.",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Redstonerayy/browser-try.git"
+  },
+  "keywords": [
+    "Electron",
+    "Browser"
+  ],
+  "author": "Anton R",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Redstonerayy/browser-try/issues"
+  },
+  "homepage": "https://github.com/Redstonerayy/browser-try#readme",
+  "devDependencies": {
+    "electron": "^12.0.0"
+  }
+}
