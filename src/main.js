@@ -8,7 +8,7 @@ function createWindow(){
       	nodeIntegration: true
     	}
  	});
-  	win.loadFile('index.html')
+  	win.loadFile('html/index.html')
 }
 
 app.whenReady().then(createWindow);
