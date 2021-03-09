@@ -1,1 +1,1 @@
-*{margin:0;padding:0}
+*{margin:0;padding:0}.topbar{width:100%;height:64px;display:flex;flex-direction:column}.topbar .tabbar{-webkit-app-region:drag;height:32px;background:#3D3D45;display:flex}.topbar .tabbar .tabs{width:85%}.topbar .tabbar .menu{width:15%;display:flex;justify-content:flex-end}.topbar .tabbar .menu div{width:52px;display:flex;justify-content:center;align-items:center;background:red}.topbar .tabbar .menu div img{width:10px;height:10px}.topbar .controlbar{height:32px;background:#353743}
