@@ -1,4 +1,16 @@
-const { app, BrowserView, BrowserWindow } = require('electron')
+//requirements
+const { app, BrowserView, BrowserWindow } = require('electron');
+const { ipcMain } = require('electron');
+
+/* ==========================================================================
+                              CLASSES
+========================================================================== */
+
+
+
+/* ==========================================================================
+                              FUNCTIONS
+========================================================================== */
 
 function createWindow(width, height, frame, load){
   	const win = new BrowserWindow({
@@ -6,42 +18,67 @@ function createWindow(width, height, frame, load){
     	height: height,
 		frame: frame,
     	webPreferences: {
-      		nodeIntegration: true
+      		nodeIntegration: true,
+			contextIsolation: false
     	}
  	});
   	win.loadFile(load);
 	return win;
 }
 
-app.whenReady().then(() => {
-	const mainwindow = createWindow(1000, 750, false, 'src/html/index.html');
-	//mainwindow.removeMenu(); frame: false removes this
-	/*
-	const view = new BrowserView();
-	const sview = new BrowserView();
-	mainwindow.setBrowserView(view)
-	mainwindow.setBrowserView(sview)
-	view.setBounds({ x: 0, y: 50, width: 1000, height: 200 })
-	view.webContents.loadURL('https://electronjs.org')
-	//view.setAutoResize({width: true, height: true});
-	sview.setBounds({ x: 0, y: 50, width: 1000, height: 200 })
-	sview.webContents.loadURL('https://github.com')
+/* ==========================================================================
+                              APP MAIN
+========================================================================== */
 
-	a = true;
-	setInterval(() => {
-		if(a){
-			mainwindow.setBrowserView(sview);
-			a = false;
-		} else {
-			mainwindow.setBrowserView(view);
-			a = true;
-		}
-	}, 5000);
-	*/
+
+var mainwindow;
+
+app.whenReady().then(() => {
+	mainwindow = createWindow(1000, 750, false, 'src/html/index.html');
+
+	const view = new BrowserView();
+	mainwindow.setBrowserView(view);
+	view.setBounds({ x: 0, y: 64, width: 500, height: 700 });
+	view.webContents.loadURL('https://www.youtube.com/watch?v=ME2PeefPIgk');
+	view.setAutoResize({width: true, height: true});
 });
 
 app.on('window-all-closed', () => {
 	if (process.platform !== 'darwin') {
-		app.quit()
+		app.quit();
 	}
+});
+
+//handle window menu
+ipcMain.handle('window-action', async (event, action) => {
+	console.log(event.sender.id);
+	let result = "";
+	switch (action) {
+		case "min":
+			mainwindow.minimize();
+			break;
+
+		case "max":
+			mainwindow.maximize();
+			result = "res";
+			break;
+
+		case "res":
+			mainwindow.unmaximize();
+			result = "max";
+			break;
+
+		case "close":
+			let browserwindows = BrowserWindow.getAllWindows();
+			browserwindows.forEach((item, i) => {
+				if(event.sender.id == browserwindows[i].id){
+					browserwindows[i].close();
+				}
+			});
+			break;
+
+		default://if nothing special parsed return current state
+			result = {};
+	}
+  	return result;
 });

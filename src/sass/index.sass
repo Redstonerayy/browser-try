@@ -8,31 +8,46 @@
 	display: flex
 	flex-direction: column
 
-	.tabbar
-		-webkit-app-region: drag
-		height: 32px
-		background: #3D3D45
+.tabbar
+	-webkit-app-region: drag
+	height: 32px
+	background: #3D3D45
+	display: flex
+
+	.tabs
+		width: 85%
+
+	.menu
+		width: 15%
 		display: flex
+		justify-content: flex-end
+		-webkit-app-region: no-drag
+		user-select: none
 
-		.tabs
-			width: 85%
-
-		.menu
-			width: 15%
+		div
+			width: 42px
 			display: flex
-			justify-content: flex-end
+			justify-content: center
+			align-items: center
 
-			div
-				width: 52px
-				display: flex
-				justify-content: center
-				align-items: center
+			&:hover
+				background: grey
+
+			img
+				width: 10px
+				height: 10px
+
+		.close
+			&:hover
 				background: red
 
-				img
-					width: 10px
-					height: 10px
+.controlbar
+	height: 32px
+	background: #353743
 
-	.controlbar
-		height: 32px
-		background: #353743
+//TODO
+// Make tab class
+// Make the control panel
+// Make the settings
+// Make the extensions
+// Get information on cookies usw
