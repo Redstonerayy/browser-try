@@ -1,5 +1,5 @@
 //requirements
-const { app, BrowserView, BrowserWindow } = require('electron');
+const { app, BrowserWindow } = require('electron');
 const { ipcMain } = require('electron');
 
 /* ==========================================================================
@@ -13,13 +13,14 @@ function createWindow(width, height, frame, maxunmax, load){
 		frame: frame,
     	webPreferences: {
       		nodeIntegration: true,
-			contextIsolation: false
+			contextIsolation: false,
+			webviewTag: true
     	}
  	});
-	if(maxunmax = "max"){
+	if(maxunmax == "max"){
 		win.maximize();
 	}
-  	win.loadURL(load + maxunmax);
+  	win.loadURL(load + `?` + maxunmax);
 	return win;
 }
 
@@ -30,24 +31,13 @@ function createWindow(width, height, frame, maxunmax, load){
 class Tab {
 	constructor(url="discover://newtab") {
 		this.url = url;
-		this.view = new BrowserView();
-		this.view.webContents.loadURL(url);
-		//this.view.setAutoResize({width: true, height: true});
 	}
 }
 
 class Window {
-	constructor(width, height, load, windowmax="max", tabs=null) {
+	constructor(width, height, load, windowmax="unmax", tabs=null) {
 		this.window = createWindow(width, height, false, windowmax, load);
 		this.tabs = [];
-
-		if(tabs == null){
-			this.tabs.push(new Tab("https://github.com"));
-			this.window.addBrowserView(this.tabs[0].view);
-			//this.tabs[0].view.webContents.loadURL(this.tabs[0].url);
-			this.tabs[0].view.setBounds({x: 0, y: 64, width: 1000, height: 700});
-			this.tabs[0].view.setAutoResize({width: true, height: true});
-		}
 	}
 }
 
@@ -60,7 +50,7 @@ class Window {
 var windows = [];
 
 app.whenReady().then(() => {
-	windows.push(new Window(1300, 700, `file://${__dirname}/html/index.html?`));
+	windows.push(new Window(1300, 700, `file://${__dirname}/html/index.html`));
 });
 
 app.on('window-all-closed', () => {
@@ -119,7 +109,6 @@ ipcMain.on("controlmenu-info-req", (event, assumedstate) => {
 		}
 	});
 	//get state
-	console.log(windows[windowindex]);
 	let state = {
 		"min": windows[windowindex].window.isMinimized(),
 		"max": windows[windowindex].window.isMaximized(),

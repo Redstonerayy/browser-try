@@ -29,10 +29,8 @@ document.querySelector('.minimize').addEventListener("click", event => {
 });
 
 document.querySelector('.max-unmax').addEventListener("click", event => {
-	console.log(max_unmax);
 	ipcRenderer.invoke('window-action', max_unmax).then((result) => {
 		max_unmax = result;
-		console.log(max_unmax);
 		document.querySelector(".max-unmax > img").src = `../img/${max_unmax}-w-20.png`;
 	});
 });
