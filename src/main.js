@@ -28,16 +28,38 @@ function createWindow(width, height, frame, maxunmax, load){
                               CLASSES
 ========================================================================== */
 
-class Tab {
-	constructor(url="discover://newtab") {
-		this.url = url;
+class Window {
+	constructor(width, height, load, windowmax="max", tabs=null) {
+		this.window = createWindow(width, height, false, windowmax, load);
+		this.tabgroups = [];
+		this.id = windows.windows.length;
 	}
 }
 
-class Window {
-	constructor(width, height, load, windowmax="unmax", tabs=null) {
-		this.window = createWindow(width, height, false, windowmax, load);
-		this.tabs = [];
+class Windows {
+	constructor() {
+		this.windows = [];
+		this.tabnumber = 0;
+	}
+
+	newwindow(){
+		this.windows.push(new Window(700, 900, `file://${__dirname}/html/index.html`))
+	}
+
+	updatetabnumber(){
+
+	}
+
+	getwindowbybrowserwindowid(){
+
+	}
+
+	getwindowbyid(){
+
+	}
+
+	getnumberoftabsallwindows(){
+		return this.tabnumber;
 	}
 }
 
@@ -47,10 +69,10 @@ class Window {
 //consts
 
 //vars
-var windows = [];
+var windows = new Windows();
 
 app.whenReady().then(() => {
-	windows.push(new Window(1300, 700, `file://${__dirname}/html/index.html`));
+	windows.newwindow();
 });
 
 app.on('window-all-closed', () => {
@@ -67,7 +89,7 @@ app.on('window-all-closed', () => {
 ipcMain.handle('window-action', async (event, action) => {
 	//get window
 	let windowindex;
-	windows.forEach((item, i) => {
+	windows.windows.forEach((item, i) => {
 		if(event.sender.id == item.window.id){
 			windowindex = i;
 		}
@@ -76,21 +98,21 @@ ipcMain.handle('window-action', async (event, action) => {
 	let result = "";
 	switch (action) {
 		case "min":
-			windows[windowindex].window.minimize();
+			windows.windows[windowindex].window.minimize();
 			break;
 
 		case "unmax":
-			windows[windowindex].window.maximize();
+			windows.windows[windowindex].window.maximize();
 			result = "max";
 			break;
 
 		case "max":
-			windows[windowindex].window.unmaximize();
+			windows.windows[windowindex].window.unmaximize();
 			result = "unmax";
 			break;
 
 		case "close":
-			windows[windowindex].window.close();
+			windows.windows[windowindex].window.close();
 			break;
 
 		default://if nothing special parsed return current state
@@ -103,16 +125,16 @@ ipcMain.handle('window-action', async (event, action) => {
 ipcMain.on("controlmenu-info-req", (event, assumedstate) => {
 	//get window
 	let windowindex;
-	windows.forEach((item, i) => {
+	windows.windows.forEach((item, i) => {
 		if(event.sender.id == item.window.id){
 			windowindex = i;
 		}
 	});
 	//get state
 	let state = {
-		"min": windows[windowindex].window.isMinimized(),
-		"max": windows[windowindex].window.isMaximized(),
-		"unmax": !( windows[windowindex].window.isMinimized() || windows[windowindex].window.isMaximized())
+		"min": windows.windows[windowindex].window.isMinimized(),
+		"max": windows.windows[windowindex].window.isMaximized(),
+		"unmax": !( windows.windows[windowindex].window.isMinimized() || windows.windows[windowindex].window.isMaximized())
 	}
 	event.reply('controlmenu-info-res', state);
 });
