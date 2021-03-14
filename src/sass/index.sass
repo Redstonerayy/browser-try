@@ -22,38 +22,38 @@ html, body
 	flex-direction: column
 	user-select: none
 
-.tabbar
-	-webkit-app-region: drag
-	height: 32px
-	background: #3D3D45
-	display: flex
-
-	.tabs
-		width: 85%
-
-	.menu
-		width: 15%
+	.tabbar
+		-webkit-app-region: drag
+		height: 32px
+		background: #3D3D45
 		display: flex
-		justify-content: flex-end
 
-		div
-			width: 42px
-			display: flex
-			justify-content: center
-			align-items: center
-			-webkit-app-region: no-drag
-			min-width: 42px
+.tabdisplay
+	width: 85%
 
-			&:hover
-				background: #515158
+.menu
+	width: 15%
+	display: flex
+	justify-content: flex-end
 
-			img
-				width: 10px
-				height: 10px
+	div
+		width: 42px
+		display: flex
+		justify-content: center
+		align-items: center
+		-webkit-app-region: no-drag
+		min-width: 42px
 
-		.close
-			&:hover
-				background: red
+		&:hover
+			background: #515158
+
+		img
+			width: 10px
+			height: 10px
+
+	.close
+		&:hover
+			background: red
 
 
 /* =============================== CONTROLBAR =============================== */
