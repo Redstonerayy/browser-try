@@ -13,19 +13,19 @@ class ControlBar extends React.Component {
 
 		//add eventlisteners
 		this.back.addEventListener('click', () => {
-			window.windowtabgroups.controlbarevent('back');
+			tabs.controlbarevent('back');
 		});
 		this.forward.addEventListener('click', () => {
-			window.windowtabgroups.controlbarevent('forward');
+			tabs.controlbarevent('forward');
 		});
 		this.reload.addEventListener('click', () => {
-			window.windowtabgroups.controlbarevent('reload');
+			tabs.controlbarevent('reload');
 		});
 		this.searchbar.addEventListener('focus', () => {
-			window.windowtabgroups.controlbarevent('focus');
+			tabs.controlbarevent('focus');
 		});
 		this.searchbar.addEventListener('focusout', () => {
-			window.windowtabgroups.controlbarevent('focusout');
+			tabs.controlbarevent('focusout');
 		});
   	}
 
@@ -48,11 +48,11 @@ class ControlBar extends React.Component {
 					</div>
 				</div>
 				<div className="bookmark">
-					<img src="../img/book.svg" alt=""></img>
+					<img src="../img/book2.svg" alt=""></img>
 				</div>
 				<div className="search-bar-container">
 					<div className="search-bar">
-						<input type="text" name="" value=""></input>
+						<input type="text" name="" defaultValue=""></input>
 					</div>
 				</div>
 				<div className="right-menu">

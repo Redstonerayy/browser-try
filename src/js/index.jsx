@@ -9,14 +9,13 @@ var tabdisplay = document.querySelector(".tabdisplay");
 var controlbarcontainer = document.querySelector(".controlbar-container");
 
 ReactDOM.render(<ControlBar ref={(controlbar) => {
-    window.controlbar = controlbar
+    window.controlbar = controlbar;
 }}/>, controlbarcontainer);
 
-ReactDOM.render(<WindowTabGroups ref={(windowtabgroups) => {
-    window.windowtabgroups = windowtabgroups;
-}}/>, tabdisplay);
-console.log(window.controlbar);
-//ReactDOM.render(<Tab />, webpageview);
+var tabs = new Tabs(["https://electronjs.org"]);
+
+
+
 //TODO
 // Make the control panel
 // Make the settings

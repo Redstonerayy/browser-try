@@ -3,29 +3,36 @@
                               FUNCTIONS
 ========================================================================== */
 
-function createWebview(id, url) {
-	let webview = document.createElement("webview");
-	webview.setAttribute("id", id);
-	webview.setAttribute("src", url);
-	return webview;
-}
+/*
+@url string with url
+@id identify each tab
+@options object
+keys:
+-style -> dark, white
+*/
 
-class Tab extends React.Component {
-	constructor(props) {
-		super(props);
+class Tab {
+	constructor(url, id, tabnumber, options) {
+		this.url = url;
+		this.id = id;
+		this.tabnumber = tabnumber;
+		this.webview = this.createWebview(this.id + "-webview", this.url);
 		this.tags = [];
-		this.webview = createWebview(this.props.id + "-webview", this.props.url)
 	}
 
-	gettabtitle(){
-		return this.webview.webContents.getTitle();
+	//tab control
+	createWebview(id, url) {
+		let webview = document.createElement("webview");
+		webview.setAttribute("id", id);
+		webview.setAttribute("src", url);
+		return webview;
 	}
 
 	goactive(){
-    	webpageview.removeChild(webpageview.lastChild);
-		webpageview.appendChild(this.webview);
-		window.controlbar.changesearchbar(this.props.url);
+    	window.controlbar.changesearchbar(this.url);
 		this.tags.push("active");
+		webpageview.removeChild(webpageview.lastChild);
+		webpageview.appendChild(this.webview);
 	}
 
 	loseactive(){
@@ -46,19 +53,13 @@ class Tab extends React.Component {
 		this.webview.reload();
 	}
 
+	//get info
+	gettabtitle(){
+		return this.webview.webContents.getTitle();
+	}
+
 	tabinfo(){
 		console.log(this.id);
 		return {"url": this.props.url, "id": this.props.id, "tabnumber": this.props.tabnumber, "tags": this.tags};
 	}
-
-  	render(){
-		if(this.props.event == "activate"){
-			this.goactive();
-		}
-    	return(
-			<div className="tab" id={this.props.id + "-tab"}>
-				<span>Test</span>
-			</div>
-    	);
-  	}
 }
