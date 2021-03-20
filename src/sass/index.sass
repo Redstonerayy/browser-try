@@ -3,6 +3,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap')
 $roboto: 'Roboto', sans-serif
 
+/* imports */
+@import 'topbar.sass'
+@import 'controlbar.sass'
+
+/* main */
 *
 	margin: 0
 	padding: 0
@@ -12,151 +17,10 @@ html, body
 	height: 100%
 	font-family: $roboto
 
-
-/* =============================== TOPBAR =============================== */
-
-.topbar
-	width: 100%
-	height: 64px
-	display: flex
-	flex-direction: column
-	user-select: none
-
-	.tabbar
-		-webkit-app-region: drag
-		height: 32px
-		background: #3D3D45
-		display: flex
-
-.tabdisplay
-	width: 85%
-
-.menu
-	width: 15%
-	display: flex
-	justify-content: flex-end
-
-	div
-		width: 42px
-		display: flex
-		justify-content: center
-		align-items: center
-		-webkit-app-region: no-drag
-		min-width: 42px
-
-		&:hover
-			background: #515158
-
-		img
-			width: 10px
-			height: 10px
-
-	.close
-		&:hover
-			background: red
-
-
-/* =============================== CONTROLBAR =============================== */
-
-.controlbar
-	height: 32px
-	background: #353743
-	display: flex
-
-/* left menu */
-.left-menu
-	width: 20%
-	height: 100%
-	display: flex
-	padding-left: 10px
-	align-items: center
-
-	.icon
-		width: 24px
-		height: 22px
-		display: flex
-		justify-content: center
-		align-items: center
-		min-width: 24px
-		border-radius: 4px
-
-		&:hover
-			background: #515158
-
-	.back
-		img
-			width: 26px
-			height: 18px
-
-	.forward
-		img
-			width: 26px
-			height: 18px
-
-	.reload
-		img
-			width: 19px
-			height: 19px
-			transform: rotate(45deg)
-
-/* bookmark */
-.bookmark
-	height: 100%
-	width: 2%
-	display: flex
-	justify-content: center
-	align-items: center
-
-	img
-		width: 18px
-		height: 18px
-
-/* search bar */
-
-.search-bar-container
-	width: 58%
-	display: flex
-	align-items: center
-
-.search-bar-focused
-	border: 1px orange
-
-.search-bar
-	width: 100%
-	height: 80%
-	background: #181A21
-	display: flex
-	align-items: center
-	justify-content: center
-	border-radius: 4px
-
-	input
-		background: #181A21
-		color: white
-		border: 0px
-		width: 95%
-		height: 100%
-		border-radius: 4px
-		outline: none
-
-
-/* right menu */
-
-.right-menu
-	height: 100%
-	width: 20%
-	display: flex
-	justify-content: flex-end
-	align-items: center
-
-	img
-		margin-right: 10px
-		width: 18px
-		height: 18px
-
 /* =============================== WEBPAGE =============================== */
 
 .webpage
+	position: relative
 	width: 100%
 	height: calc(100% - 64px)
 
