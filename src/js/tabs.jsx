@@ -118,8 +118,8 @@ class Tabs {
 					}
 					
 				} else {//last tab, quit app now
-					//TODO close window
-					console.log("Close Window");
+					ipcRenderer.invoke('window-action', 'close').then((result) => {
+					});
 				}
 			}
 		});

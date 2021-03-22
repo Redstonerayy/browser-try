@@ -4,11 +4,10 @@
 ========================================================================== */
 
 //TODO Todolist
-// Make newtab nice
 // Make the BrowserWindow close when last tab is closed
 // Make tab switching more efficient by hidding inactive tabs
-// Make the settings
 // Make the extensions
+// Make the settings
 // Get information on cookies usw
 //id reuses system for the Windows class
 //document main.js
