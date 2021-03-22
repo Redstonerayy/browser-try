@@ -7,27 +7,20 @@
 -after mount it creates references to each of the components and makes the onclick events
 -all events go to the tab instance, which handles the actions
 
-* @param
--class takes no parameters
+* @noparams
 
-* @methods
-! No Constructor
-
-! Properties; this.
+* @properties; this.
 back - DOM element back div
 forward - DOM element forward div
 reload - DOM element reload div
 searchbar - DOM element searchbar input
 
+* @methods
 ! General
+? constructor
 ? componentDidMount(react) 
--to get the DOM objects for events
-
-? render(react) 
--render the controlbar
-
-? changeSearchBar(test, showhttp)
--change searchbar and eventually hide https://
+? render(react)
+? changeSearchBar @test @showhttp
 
 * @ressources
 ! controlbar.sass
@@ -37,7 +30,6 @@ searchbar - DOM element searchbar input
 	-arrow-clockwise.svg
 	-book2.svg
 	-list.svg
-
 */
 
 class ControlBar extends React.Component {
@@ -46,10 +38,12 @@ class ControlBar extends React.Component {
 	}
 
   	componentDidMount(){
+		//to get the DOM objects for events
 		this.back = document.querySelector('.back');
 	  	this.forward = document.querySelector('.forward');
 	  	this.reload = document.querySelector('.reload');
-	  	this.searchbar = document.querySelector('.search-bar > input');
+	  	this.searchbar = document.querySelector('.search-bar');		
+	  	this.searchbarinput = document.querySelector('.search-bar > input');
 
 		//add eventlisteners
 		this.back.addEventListener('click', () => {
@@ -61,16 +55,17 @@ class ControlBar extends React.Component {
 		this.reload.addEventListener('click', () => {
 			tabs.controlBarEvent('reload');
 		});
-		this.searchbar.addEventListener('focus', () => {
-			tabs.controlBarEvent('focus');
+		this.searchbarinput.addEventListener('focus', () => {
+			this.searchbar.style.border = "0.5px solid rgba(255, 165, 0 , 0.3)";
 		});
-		this.searchbar.addEventListener('focusout', () => {
-			tabs.controlBarEvent('focusout');
+		this.searchbarinput.addEventListener('focusout', () => {
+			this.searchbar.style.border = "";
 		});
   	}
 
 	changeSearchBar(text, showhttp){
-		this.searchbar.value = text;
+		//change searchbar and eventually hide https://
+		this.searchbarinput.value = text;
 	}
 
 	render(){

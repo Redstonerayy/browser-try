@@ -6,10 +6,12 @@ const { ipcMain } = require('electron');
                               FUNCTIONS
 ========================================================================== */
 
-function createWindow(width, height, frame, maxunmax, load){
+function createWindow(width, height, minheight, minwidth, frame, maxunmax, load){
   	const win = new BrowserWindow({
     	width: width,
     	height: height,
+		minWidth: minwidth,
+		minHeight: minheight,
 		frame: frame,
     	webPreferences: {
       		nodeIntegration: true,
@@ -29,8 +31,8 @@ function createWindow(width, height, frame, maxunmax, load){
 ========================================================================== */
 
 class Window {
-	constructor(width, height, load, windowmax="max", tabs=null) {
-		this.window = createWindow(width, height, false, windowmax, load);
+	constructor(width, height, load, tabs=null, windowmax="max", minheight=100, minwidth=500) {
+		this.window = createWindow(width, height, minheight, minwidth, false, windowmax, load);
 		this.tabgroups = [];
 		this.id = windows.windows.length;
 	}
@@ -81,7 +83,6 @@ app.on('window-all-closed', () => {
 	}
 });
 
-
 /* ==========================================================================
                               HANDLE WINDOW CONTROLS
 ========================================================================== */
@@ -121,7 +122,7 @@ ipcMain.handle('window-action', async (event, action) => {
   	return result;
 });
 
-//check cuz if resized by moving to edges
+//check if resized by moving to edges
 ipcMain.on("controlmenu-info-req", (event, assumedstate) => {
 	//get window
 	let windowindex;
@@ -131,10 +132,12 @@ ipcMain.on("controlmenu-info-req", (event, assumedstate) => {
 		}
 	});
 	//get state
+	let minimized = windows.windows[windowindex].window.isMinimized();
+	let maximized = windows.windows[windowindex].window.isMaximized();
 	let state = {
-		"min": windows.windows[windowindex].window.isMinimized(),
-		"max": windows.windows[windowindex].window.isMaximized(),
-		"unmax": !( windows.windows[windowindex].window.isMinimized() || windows.windows[windowindex].window.isMaximized())
+		"min": minimized,
+		"max": maximized,
+		"unmax": !( minimized || maximized)
 	}
 	event.reply('controlmenu-info-res', state);
 });

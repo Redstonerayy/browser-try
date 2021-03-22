@@ -9,54 +9,34 @@ events from the controlbar
 @urls urls to be loaded in tabs
 @options object with additional information
 
-* @methods
-! General
-? constructor @urls @options
--make new Tab(url) for each url
--if no urls given, load a new Tab with newtab.html
--add onclick eventListener to createTab, which creates a new Tab with newtab.html
-
-! Properties; this.
+* @properties; this.
 urls - urls of the tabs
 tabs - tab objects
 numberoftabs - number of tabs in this.tabs
 ids - list of all ids, that tabs in this.tabs have
 idcounter - counter, which counts up for creating new ids
-resuseids - ids from destroyed tabs
+reuseids - ids from destroyed tabs
 activetab - currently active tab
 
+* @methods
+! General
+? constructor @urls @options
 ! Tab Management
 ? getNewTabId
-@return an unused id; the Tabs class counts up and refactors ids when
-a tab is destroyed
-
 ? makeTabActive @tabid
--invokes loseActive() on the current active tab
--filters this.tabs for the tabid and invokes goActive() on the found tab
-
 ? addReuseId @id
--pushes id to this.resuseids
-
+? removeTab @id
 ? getActiveTabs
--filters for tabs with the "active" tag
-@return returns the found tabs
-
 
 ! Tab Events
 ? controlBarEvent @eventname
--handles the events of the Controlbar
--the Controlbar invokes this method and gives the event as parameter
--switch statement determines the event and executes a task
-
 
 * @ressources
 Styles
 ! newtab.sass
 
-Markup
+HTML
 ! newtab.html
-	
-
 */
 
 class Tabs {
@@ -67,10 +47,10 @@ class Tabs {
 		this.numberoftabs = urls.length;
 		this.ids = [];
 		this.idcounter = 0;
-		this.resuseids = [];
+		this.reuseids = [];
 		this.activetab = undefined;
 
-		//make tabs
+		//make new Tab(url) for each url
 		this.urls.forEach(url => {
 			this.tabs.push( new Tab(url, this.getNewTabId(true)));
 		});
@@ -83,7 +63,8 @@ class Tabs {
 		this.activetab = this.tabs[0];
 		this.activetab.goActive();
 
-		//wait for newtab event
+		/* add onclick eventListener to createTab, which creates 
+		a new Tab with newtab.html */
 		document.querySelector(".create-tab").addEventListener('click', () => {
 			this.tabs.push( new Tab(`file://${__dirname}/newtab.html`, this.getNewTabId(true)));
 		});
@@ -91,28 +72,61 @@ class Tabs {
 
 	//! Tab Management
 	getNewTabId(countup){
-		if(this.resuseids.length == 0){
+		/*
+		return an unused id; the Tabs class counts up and 
+		refactors ids when a tab is destroyed
+		*/
+		if(this.reuseids.length == 0){
 			if(countup){
 				this.idcounter += 1;
 			}
 			this.ids.push(this.idcounter - 1);
 			return this.idcounter - 1;
 		} else {
-			return this.resuseids.splice(-1, 1, 0);
+			return this.reuseids.splice(-1, 1)[0];
 		}
 	}
 
 	makeTabActive(tabid){
 		this.activetab.loseActive();
+		//filters this.tabs for the tabid 
 		this.activetab = this.tabs.filter(tab => { return tab.id == tabid })[0];
 		this.activetab.goActive();
 	}
 
 	addReuseId(id){
-		this.resuseids.push(id);
+		//-pushes id to this.reuseids
+		this.reuseids.push(id.replace("-tab", ""));
+	}
+
+	removeTab(id){
+		this.addReuseId(id);
+		this.tabs.filter((item, index) => {
+			if(item.id == id){
+				//destroy tabgui and delete from list
+				item.destroyTabGui();
+				this.tabs.splice(index, 1);
+				//make other tab active
+				if(this.tabs.length > 0){
+					if(index > 0){
+						this.activetab = this.tabs[index - 1];
+						this.activetab.goActive();
+
+					} else {//was the most left tab
+						this.activetab = this.tabs[index];
+						this.activetab.goActive();
+					}
+					
+				} else {//last tab, quit app now
+					//TODO close window
+					console.log("Close Window");
+				}
+			}
+		});
 	}
 
 	getActiveTabs(){
+		//filters for tabs with the "active" tag and returns them
 		let activetabs = [];
 		this.tabs.forEach(tab => {
 			if(tab.tags.includes("active")){
@@ -124,6 +138,12 @@ class Tabs {
 
 	//! Tab Events
 	controlBarEvent(eventname){
+		/*
+		handles the events of the Controlbar
+		-the Controlbar invokes this method and gives the event 
+		as parameter
+		-switch statement determines the event and executes a task
+		*/
 		let tab = this.activetab;
 		switch (eventname) {
 			case 'back':

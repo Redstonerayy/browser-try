@@ -28,8 +28,7 @@
 	overflow: auto
 
 	.tab-container
-		width: 170px
-		min-width: 4%
+		width: 200px
 		display: flex
 
 
@@ -42,6 +41,7 @@
 	border-radius: 4px 4px 0px 0px
 	overflow: hidden
 	-webkit-app-region: no-drag
+	position: relative
 
 	.favicon
 		margin-left: 5%
@@ -54,11 +54,32 @@
 		font-size: 10px
 		color: white
 
-	.close-tab
-		display: none
-		
-	&:hover > .close-tab
-		//TODO close tab
+.tab:hover > .tab-menu
+	display: flex
+
+
+.tab-menu
+	display: none
+	position: absolute
+	justify-content: center
+	align-items: center
+	height: 100%
+	right: 0%
+	background: #353743
+	padding-left: 5px
+
+	.close-tab-div
+		width: 20px
+		height: 20px
+
+		&:hover
+			background: #515158
+			border-radius: 50%
+
+		.close-tab
+			width: 100%
+			height: 100%
+			transform: rotate(45deg)
 
 
 /* create tab */

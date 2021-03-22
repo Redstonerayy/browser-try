@@ -10,15 +10,10 @@ div. It displays the information like title, favicon and takes the events.
 -favicon to display a favicon
 -title to display a title
 
-* @methods
-onClick(react)
-	-invokes makeTabActive on tabs with the tabid
-
 * @ressources
 ! topbar.sass
 ! Images: ../img/
 	-plus.svg which gets rotated to make a close sign
-
 */
 
 class TabGui extends React.Component {
@@ -28,12 +23,21 @@ class TabGui extends React.Component {
 	
 	render(){
 		return(
-			<div id={this.props.tabid} className="tab" onClick={() => {
-				tabs.makeTabActive(this.props.tabid);
+			<div id={this.props.tabid} className="tab" onClick={(event) => {
+				if(["tab", "favicon", "tabtitle"].includes(event.target.className)){
+					//if on all except the close is clicked, make this tab active
+					tabs.makeTabActive(this.props.tabid);
+				}
 			}}>
 				<img className="favicon" src={this.props.favicon} alt=""/>
-				<span>{this.props.title}</span>
-				<img className="close-tab" src="../img/plus.svg" alt=""/>
+				<span className="tabtitle">{this.props.title}</span>
+				<div className="tab-menu">
+					<div className="close-tab-div" onClick={() =>{
+						tabs.removeTab(this.props.tabid);
+					}}>
+						<img className="close-tab" src="../img/plus.svg" alt=""/>
+					</div>
+				</div>
 			</div>
 		)
 	}
@@ -52,15 +56,7 @@ class TabGui extends React.Component {
 @tabnumber the position of the tab in the tabbar, can differ from the id
 @options an object with additional information
 
-* @methods
-! General
-? constructor
--execute this.createTabView() to add a TabGui to the tabdisplay
--create webview(this.id + "-webview", this.url)
-addEventListeners on faviconupdate and dom-ready to rerender
-TagGui when the information is received
-
-! Properties; this.
+* @properties; this.
 url - url of this tab
 id - id + "-tab"; id of this tab
 tabnumber - position in tabbar of this tab
@@ -68,47 +64,27 @@ tags - list of tags
 tabtitle - title of the webview
 webview - DOM element webview
 
+* @methods
+! General
+? constructor
+
 ! GUI
 ? createWebview @id @url
--creates a webview with the id of the tab and the given url loaded
-@return DOM object webview
-
 ? createTabView
--creates the div which gets appended to the tabdisplay
--inside the TabGui component(react) gets rendered
--on receive of tabtitle and favicon the components gets rerended
--the event listeners get set in the constructor of the Tab class
 	! page-favicon-updated -> favicon
 	! dom-ready -> tabtitle
-
-? goActive 
--changes the url in the controlbar to the tabs url
--ads the "active" tag to the Tabs tags
--removes the webpageview lastchild and ads the webview of this tab
-as child
-
+? destroyTabGui
 
 ! Tab Control
+? goActive
 ? loseActive
--remove "active" tag
-
 ? forward
--forwards in the webview
-
 ? back
--goes back in the webview
-
 ? reload
--reloads the webview
-
 
 ! Information management
 ? getTabTitle
-@return returns the webview title
-
 ? tabInfo
-@return general informatin about the tab;
-url, id, tabnumber, tags
 
 * @ressources
 ! topbar.sass
@@ -126,8 +102,11 @@ class Tab {
 		//gui
 		this.favicon = "../img/loading.webp";
 		this.tabtitle = "Webpage Loading";
+		//add a TabGui to the tabdisplay
 		this.createTabView();
+		//webview
 		this.webview = this.createWebview(this.id + "-webview", this.url);
+		//event listeners to update TabGui title and favicon
 		this.webview.addEventListener('page-favicon-updated', (event) => {
 			this.favicon = event.favicons[0];
 			ReactDOM.render(
@@ -146,6 +125,7 @@ class Tab {
 
 	//! GUI
 	createWebview(id, url) {
+		//creates a webview with the id of the tab and the url loaded
 		let webview = document.createElement("webview");
 		webview.setAttribute("id", id);
 		webview.setAttribute("src", url);
@@ -153,25 +133,42 @@ class Tab {
 	}
 
 	createTabView(){
-		//make container div
+		//creates the div which gets appended to the tabdisplay
 		let containerdiv = document.createElement('div');
 		containerdiv.className = "tab-container";
 		containerdiv.id = `${this.id}-container`;
 		tabdisplay.insertBefore(containerdiv, createnewtab);
 		//ref
 		this.containerdiv = document.getElementById(`${this.id}-container`);
-		//render element
+		//inside the TabGui component(react) gets rendered
 		ReactDOM.render(
 			<TabGui tabid={this.id} title={this.tabtitle} favicon={this.favicon}/>
 			, this.containerdiv
 		);
 	}
 
+	destroyTabGui(){
+		//remove tabview
+		let tabcontainer = document.getElementById(`${this.id}-container`);
+		let tabwebview = document.getElementById(`${this.id}-webview`);
+
+		if(tabcontainer){//must exist or be loaded to remove
+			tabcontainer.remove()
+		}
+		if(tabwebview){//must exist or be loaded to remove
+			tabwebview.remove()
+		}
+	}
+
 	//! Tabcontrol
 	goActive(){
     	window.controlbar.changeSearchBar(this.url);
 		this.tags.push("active");
-		webpageview.removeChild(webpageview.lastChild);
+		//removes the webpageview lastchild and 
+		//ads the webview of this tab as child
+		if(webpageview.lastChild){
+			webpageview.removeChild(webpageview.lastChild);
+		}
 		webpageview.appendChild(this.webview);
 	}
 
@@ -199,7 +196,8 @@ class Tab {
 	}
 
 	tabInfo(){
-		console.log(this.id);
+		//return general informatin about the tab; 
+		//url, id, tabnumber, tags
 		return {"url": this.props.url, "id": this.props.id, "tabnumber": this.props.tabnumber, "tags": this.tags};
 	}
 }

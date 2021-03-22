@@ -32,22 +32,12 @@ npm run make
 
 # Documentation
 
-There is infile documentation for these files
-* tab.jsx
-* tabs.jsx
-* index.jsx
-* controlbar.jsx
-
-## Docs
-The window.js file is only there to control the right menu in the topbar, which is
-responsible for the standard window controls. It takes the actions and handles them
-and its responsible for changing the icons.
-
+There is documentation in [DOCUMENTATION.md](DOCUMENTATION.md)
 
 
 # Todo
-* Make Bookmarks
-* Make multiwindow support
+- Make Bookmarks
+- Make multiwindow support
 
 # Ressources
 
