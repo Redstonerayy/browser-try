@@ -4,12 +4,12 @@
 ========================================================================== */
 
 //TODO Todolist
-// Make tab switching more efficient by hidding inactive tabs
-// Make the extensions
 // Make the settings
+//document main.js
+// Make the extensions 
+//-> session
 // Get information on cookies usw
 //id reuses system for the Windows class
-//document main.js
 //update docs
 
 /* 
@@ -51,5 +51,5 @@ ReactDOM.render(<ControlBar ref={(controlbar) => {
 var tabs = new Tabs(["https://duckduckgo.com/?q=send+search+request+to+duckduckgo&t=bravened&ia=web"]);
 
 //initialize keyboard interface
-var keyboard = new KeyBoardInterface([KeyEnter]);
+var keyboard = new KeyBoardInterface([KeyEnter, KeyF5]);
 keyboard.start();

@@ -24,12 +24,15 @@ if(img == "dark-souls-high.jpg"){
 }
 
 let blackgithublogo = [
-    
+    "mountain-climber.jpg",
+    "tokyo-tower-night.jpg",
+    "new-york.jpg",
 ]
 
 //
 if(blackgithublogo.includes(img)){
-    document.querySelector(".github-logo").src = "../img/github-dark.png";
+    document.querySelector(".github-logo").src = "../img/github-black.png";
+    document.querySelector(".info-me").style.color = "black";
 }
 
 main.style.backgroundImage = `url(../img/${img})`;

@@ -138,6 +138,7 @@ class Tab {
 		this.createTabView();
 		//webview
 		this.webview = this.createWebview(this.id + "-webview", this.url);
+		
 		//event listeners to update TabGui title and favicon
 		this.webview.addEventListener('page-favicon-updated', (event) => {
 			this.favicon = event.favicons[0];
@@ -177,11 +178,10 @@ class Tab {
 		}
 		let webview = document.getElementById(this.id + "-webview");
 		if(webview){
-			//exists but is hidden
+			//show the webview
 			webview.style.display = "";
 		} else {
-			//ads the webview of this tab as child
-			console.log(this.webview.style.display);
+			//adds the webview of this tab as child
 			webpageview.appendChild(this.webview);
 		}
 	}

@@ -1,3 +1,8 @@
+/* ------------------------------------------------
+                   FUNCTIONS
+                   
+-------------------------------------------------*/
+
 function validURL(str) {
     var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
       '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
@@ -7,6 +12,11 @@ function validURL(str) {
       '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
     return !!pattern.test(str);
 }
+
+/* ------------------------------------------------
+                   KEY CLASS
+                   
+-------------------------------------------------*/
 
 class Key{
     constructor(description, keycode, shift, ctrl, action){
@@ -18,6 +28,10 @@ class Key{
     }
 }
 
+/* ------------------------------------------------
+                   KEYS
+                   
+-------------------------------------------------*/
 
 const KeyEnter = new Key(
     `Multiple actions:
@@ -37,5 +51,16 @@ const KeyEnter = new Key(
                 window.controlbar.changeSearchBar(`https://duckduckgo.com/?q=${link}&ia=web`);
             }
         }
+    }
+)
+
+const KeyF5 = new Key(
+    `Reload Page`,
+    "F5",
+    false,
+    false,
+    () => {
+        console.log("reload");
+        tabs.activetab.reload();
     }
 )

@@ -1,6 +1,5 @@
 //requirements
-const { app, BrowserWindow } = require('electron');
-const { ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, webContents } = require('electron');
 
 /* ==========================================================================
                               FUNCTIONS
