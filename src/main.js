@@ -1,5 +1,5 @@
 //requirements
-const { app, BrowserWindow, ipcMain, webContents } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, MenuItem } = require('electron');
 
 /* ==========================================================================
                               FUNCTIONS
@@ -47,16 +47,14 @@ class Windows {
 		this.windows.push(new Window(700, 900, `file://${__dirname}/html/index.html`))
 	}
 
-	updatetabnumber(){
-
-	}
-
-	getwindowbybrowserwindowid(){
-
-	}
-
-	getwindowbyid(){
-
+	getFocusedWindow(){
+		let activewindow = null;
+		BrowserWindow.getAllWindows().forEach(browserwindow => {
+			if(browserwindow.isFocused()){
+				activewindow = browserwindow;
+			}
+		});
+		return activewindow;
 	}
 
 	getnumberoftabsallwindows(){
@@ -81,6 +79,29 @@ app.on('window-all-closed', () => {
 		app.quit();
 	}
 });
+
+/* ------------------------------------------------
+				   KEYBOARD
+				   
+-------------------------------------------------*/
+
+const menu = new Menu()
+menu.append(new MenuItem({
+  label: 'Electron',
+  submenu: [{
+    role: 'help',
+    accelerator: process.platform === 'darwin' ? 'Return' : 'Return',
+    click: () => { 
+		console.log('Electron rocks!');
+		let focuswindow = windows.getFocusedWindow();
+		focuswindow.webContents.send("Return", "");
+		focuswindow.openDevTools();
+	}
+  }]
+}))
+
+Menu.setApplicationMenu(menu)
+
 
 /* ==========================================================================
                               HANDLE WINDOW CONTROLS

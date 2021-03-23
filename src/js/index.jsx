@@ -1,4 +1,5 @@
 'use strict';
+
 /* ==========================================================================
                               RENDERER MAIN
 ========================================================================== */
@@ -50,6 +51,6 @@ ReactDOM.render(<ControlBar ref={(controlbar) => {
 //tabs object, which controls the window
 var tabs = new Tabs(["https://duckduckgo.com/?q=send+search+request+to+duckduckgo&t=bravened&ia=web"]);
 
-//initialize keyboard interface
-var keyboard = new KeyBoardInterface([KeyEnter, KeyF5]);
-keyboard.start();
+ipcRenderer.on("Return", (message) => {
+    console.log("return"); 
+});
