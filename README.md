@@ -37,6 +37,7 @@ There is documentation in [DOCUMENTATION.md](DOCUMENTATION.md)
 
 
 # Todo
+- Adapt to BrowserView
 - Make Bookmarks
 - Make multiwindow support
 
