@@ -52,11 +52,11 @@ class Tabs {
 
 		//make new Tab(url) for each url
 		this.urls.forEach(url => {
-			this.tabs.push( new Tab(url, this.getNewTabId(true)));
+			this.tabs.push( new Tab(url, this.getNewTabId(true), 0, true));
 		});
 		//no urls given, make new tab
 		if(this.urls.length == 0){
-			this.tabs.push( new Tab(`file://${__dirname}/html/newtab.html`, this.getNewTabId(true)));
+			this.tabs.push( new Tab(`file://${__dirname}/html/newtab.html`, this.getNewTabId(true), 0, true));
 		}
 
 		//make one tab go active
@@ -66,7 +66,7 @@ class Tabs {
 		/* add onclick eventListener to createTab, which creates 
 		a new Tab with newtab.html */
 		document.querySelector(".create-tab").addEventListener('click', () => {
-			this.tabs.push( new Tab(`file://${__dirname}/newtab.html`, this.getNewTabId(true)));
+			this.tabs.push( new Tab(`file://${__dirname}/newtab.html`, this.getNewTabId(true), 0, true));
 		});
 	}
 

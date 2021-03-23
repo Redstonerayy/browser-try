@@ -26,6 +26,7 @@ git clone https://github.com/Redstonerayy/browser-try.git
 cd browser-try
 npm install
 npm update
+npm exec electron-forge import
 npm start
 npm run make
 ```

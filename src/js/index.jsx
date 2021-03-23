@@ -4,7 +4,6 @@
 ========================================================================== */
 
 //TODO Todolist
-// Make the BrowserWindow close when last tab is closed
 // Make tab switching more efficient by hidding inactive tabs
 // Make the extensions
 // Make the settings

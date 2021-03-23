@@ -93,34 +93,20 @@ webview - DOM element webview
 */
 
 class Tab {
-	constructor(url, id, tabnumber, options) {
+	constructor(url, id, tabnumber, load, options) {
 		//init
 		this.url = url;
 		this.id = id + "-tab";
 		this.tabnumber = tabnumber;
 		this.tags = [];
+		this.loaded = load;
 		//gui
 		this.favicon = "../img/loading.webp";
 		this.tabtitle = "Webpage Loading";
-		//add a TabGui to the tabdisplay
-		this.createTabView();
-		//webview
-		this.webview = this.createWebview(this.id + "-webview", this.url);
-		//event listeners to update TabGui title and favicon
-		this.webview.addEventListener('page-favicon-updated', (event) => {
-			this.favicon = event.favicons[0];
-			ReactDOM.render(
-				<TabGui tabid={this.id} title={this.tabtitle} favicon={this.favicon}/>
-				, this.containerdiv
-			);
-		});
-		this.webview.addEventListener('dom-ready', () => {
-			this.tabtitle = this.getTabTitle();
-			ReactDOM.render(
-				<TabGui tabid={this.id} title={this.tabtitle} favicon={this.favicon}/>
-				, this.containerdiv
-			);
-		});
+		
+		if(load){
+			this.loadTab();
+		}
 	}
 
 	//! GUI
@@ -147,6 +133,28 @@ class Tab {
 		);
 	}
 
+	loadTab(){
+		//add a TabGui to the tabdisplay
+		this.createTabView();
+		//webview
+		this.webview = this.createWebview(this.id + "-webview", this.url);
+		//event listeners to update TabGui title and favicon
+		this.webview.addEventListener('page-favicon-updated', (event) => {
+			this.favicon = event.favicons[0];
+			ReactDOM.render(
+				<TabGui tabid={this.id} title={this.tabtitle} favicon={this.favicon}/>
+				, this.containerdiv
+			);
+		});
+		this.webview.addEventListener('dom-ready', () => {
+			this.tabtitle = this.getTabTitle();
+			ReactDOM.render(
+				<TabGui tabid={this.id} title={this.tabtitle} favicon={this.favicon}/>
+				, this.containerdiv
+			);
+		});
+	}
+
 	destroyTabGui(){
 		//remove tabview
 		let tabcontainer = document.getElementById(`${this.id}-container`);
@@ -164,18 +172,25 @@ class Tab {
 	goActive(){
     	window.controlbar.changeSearchBar(this.url);
 		this.tags.push("active");
-		//removes the webpageview lastchild and 
-		//ads the webview of this tab as child
-		if(webpageview.lastChild){
-			webpageview.removeChild(webpageview.lastChild);
+		if(!this.loaded){
+			this.loadTab();
 		}
-		webpageview.appendChild(this.webview);
+		let webview = document.getElementById(this.id + "-webview");
+		if(webview){
+			//exists but is hidden
+			webview.style.display = "";
+		} else {
+			//ads the webview of this tab as child
+			console.log(this.webview.style.display);
+			webpageview.appendChild(this.webview);
+		}
 	}
 
 	loseActive(){
 		if(this.tags.includes("active")){
 			this.tags = this.tags.filter(value => !(value == "active"));
 		}
+		this.webview.style.display = "none";
 	}
 
 	forward(){
