@@ -10,8 +10,11 @@
 // Make the extensions 
 //-> session
 // Get information on cookies usw
+//make config.js file and a permanent new tab backgroud possible
 //id reuses system for the Windows class
+//better visuals
 //update docs
+
 
 /* 
 * @use
@@ -34,13 +37,10 @@ Styles
 //init
 //a section where to render the webviews as the main webpage
 var webpageview = document.querySelector(".webpage");
-
 //a section where to display the tabs
 var tabdisplay = document.querySelector(".tabdisplay");
-
 //a clickable DOM element to create new tabs
 var createnewtab = document.querySelector(".create-tab");
-
 //a container for the controlbar
 var controlbarcontainer = document.querySelector(".controlbar-container");
 
@@ -50,6 +50,8 @@ ReactDOM.render(<ControlBar ref={(controlbar) => {
 
 //tabs object, which controls the window
 var tabs = new Tabs(["https://duckduckgo.com/?q=send+search+request+to+duckduckgo&t=bravened&ia=web"]);
+
+
 
 ipcRenderer.on("Return", (message) => {
     console.log("return"); 
