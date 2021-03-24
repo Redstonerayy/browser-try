@@ -30,7 +30,7 @@ function createWindow(width, height, minheight, minwidth, frame, maxunmax, load)
 ========================================================================== */
 
 class Window {
-	constructor(width, height, load, tabs=null, windowmax="max", minheight=100, minwidth=500) {
+	constructor(width, height, load, id, tabs=null, windowmax="max", minheight=100, minwidth=500) {
 		this.window = createWindow(width, height, minheight, minwidth, false, windowmax, load);
 		this.tabgroups = [];
 		this.id = windows.windows.length;
@@ -40,11 +40,21 @@ class Window {
 class Windows {
 	constructor() {
 		this.windows = [];
-		this.tabnumber = 0;
+		this.idcounter = 0;
+		this.reuseids = [];
 	}
 
-	newwindow(){
-		this.windows.push(new Window(700, 900, `file://${__dirname}/html/index.html`))
+	newWindow(){
+		this.windows.push( new Window(700, 900, `file://${__dirname}/html/index.html`, this.getNewWindowId()) );
+	}
+
+	getNewWindowId(){
+		if(this.reuseids.length > 0){
+			return this.reuseids.splice(-1, 1);
+		} else {
+			this.idcounter += 1;
+			return this.idcounter - 1;
+		}
 	}
 
 	getFocusedWindow(){
@@ -55,10 +65,6 @@ class Windows {
 			}
 		});
 		return activewindow;
-	}
-
-	getnumberoftabsallwindows(){
-		return this.tabnumber;
 	}
 }
 
@@ -71,7 +77,7 @@ class Windows {
 var windows = new Windows();
 
 app.whenReady().then(() => {
-	windows.newwindow();
+	windows.newWindow();
 });
 
 app.on('window-all-closed', () => {
@@ -81,27 +87,49 @@ app.on('window-all-closed', () => {
 });
 
 /* ------------------------------------------------
-				   KEYBOARD
+				   KEYBOARD/MENUITEMS
 				   
 -------------------------------------------------*/
 
 const menu = new Menu()
+//KEYS
+
+//DevTools, Quit
 menu.append(new MenuItem({
-  label: 'Electron',
-  submenu: [{
-    role: 'help',
-    accelerator: process.platform === 'darwin' ? 'Return' : 'Return',
-    click: () => { 
-		console.log('Electron rocks!');
-		let focuswindow = windows.getFocusedWindow();
-		focuswindow.webContents.send("Return", "");
-		focuswindow.openDevTools();
-	}
-  }]
-}))
+	label: 'Window',
+	submenu: [
+	{
+		role: 'toggleDevTools',
+		accelerator: process.platform === 'darwin' ? 'Cmd+Shift+I' : 'Ctrl+Shift+I',
+		click: () => { 
+			console.log('DevTools');
+		}
+	},
+	{
+		role: 'quit',
+		accelerator: process.platform === 'darwin' ? 'Alt+F4' : 'Alt+F4',
+		click: () => {
+		}
+	}]
+}));
 
-Menu.setApplicationMenu(menu)
+//Reload webview
+menu.append(new MenuItem({
+	label: 'Content',
+	submenu: [{
+		label: 'reload',
+		accelerator: process.platform === 'darwin' ? 'F5' : 'F5',
+		click: () => { 
+			console.log('Reload');
+			let focuswindow = windows.getFocusedWindow();
+			focuswindow.webContents.send("F5", "");
+		}
+	}]
+}));
 
+
+//set menu
+Menu.setApplicationMenu(menu);
 
 /* ==========================================================================
                               HANDLE WINDOW CONTROLS

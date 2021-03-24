@@ -11,10 +11,11 @@
 //-> session
 // Get information on cookies usw
 //make config.js file and a permanent new tab backgroud possible
-//id reuses system for the Windows class
 //better visuals
+//more hotkeys
+//multi window support
+//drop windows into each other
 //update docs
-
 
 /* 
 * @use
@@ -52,7 +53,10 @@ ReactDOM.render(<ControlBar ref={(controlbar) => {
 var tabs = new Tabs(["https://duckduckgo.com/?q=send+search+request+to+duckduckgo&t=bravened&ia=web"]);
 
 
-
-ipcRenderer.on("Return", (message) => {
-    console.log("return"); 
+//keyboard commands
+ipcRenderer.on("F5", (message) => {
+    tabs.activetab.reload();
 });
+
+var keyboard = new KeyBoardInterface([KeyEnter]);
+keyboard.start();

@@ -100,6 +100,7 @@ class Tab {
 		this.tabnumber = tabnumber;
 		this.tags = [];
 		this.loaded = load;
+		this.domready = false;
 		//gui
 		this.favicon = "../img/loading.webp";
 		this.tabtitle = "Webpage Loading";
@@ -139,6 +140,7 @@ class Tab {
 		//webview
 		this.webview = this.createWebview(this.id + "-webview", this.url);
 		
+
 		//event listeners to update TabGui title and favicon
 		this.webview.addEventListener('page-favicon-updated', (event) => {
 			this.favicon = event.favicons[0];
@@ -148,11 +150,48 @@ class Tab {
 			);
 		});
 		this.webview.addEventListener('dom-ready', () => {
+			this.domready = true;
 			this.tabtitle = this.getTabTitle();
 			ReactDOM.render(
 				<TabGui tabid={this.id} title={this.tabtitle} favicon={this.favicon}/>
 				, this.containerdiv
 			);
+
+			//blur forward and back button
+			if(!this.webview.canGoForward()){
+				window.controlbar.changeForwardState(false);
+				this.canForward = this.webview.canGoForward();
+			}
+			if(!this.webview.canGoBack()){
+				window.controlbar.changeBackState(false);
+				this.canBack = this.webview.canGoBack();
+			} 
+		});
+
+
+		//event listener to update searchbar
+		//normal user navigation
+		this.webview.addEventListener('will-navigate', (event) => {
+			if(this.id == tabs.activetab.id){
+				window.controlbar.changeSearchBar(event.url);
+			}
+		});
+
+		//will-navigate will not trigger for goBack() or goForward()
+		this.webview.addEventListener('did-navigate', (event) => {
+			if(this.id == tabs.activetab.id){
+				window.controlbar.changeSearchBar(event.url);
+			}
+			
+			if(this.domready){
+				if(this.webview.canGoForward() != this.canForward){
+					window.controlbar.changeForwardState(this.webview.canGoForward());
+				}
+	
+				if(this.webview.canGoBack() != this.canBack){
+					window.controlbar.changeBackState(this.webview.canGoBack());
+				}
+			}
 		});
 	}
 
