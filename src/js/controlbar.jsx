@@ -44,8 +44,10 @@ class ControlBar extends React.Component {
 	  	this.reload = document.querySelector('.reload');
 	  	this.searchbar = document.querySelector('.search-bar');		
 	  	this.searchbarinput = document.querySelector('.search-bar > input');
+		this.settings = document.querySelector(".settings");
 
 		//add eventlisteners
+		//tab
 		this.back.addEventListener('click', () => {
 			tabs.controlBarEvent('back');
 		});
@@ -60,6 +62,11 @@ class ControlBar extends React.Component {
 		});
 		this.searchbarinput.addEventListener('focusout', () => {
 			this.searchbar.style.border = "";
+		});
+
+		//browser
+		this.settings.addEventListener('click', () => {
+			tabs.makeNewTab("settings.html", true, true, true);
 		});
   	}
 
@@ -113,7 +120,9 @@ class ControlBar extends React.Component {
 					</div>
 				</div>
 				<div className="right-menu">
-					<img src="../img/list.svg" alt=""></img>
+					<div className="settings">
+						<img src="../img/list.svg" alt=""></img>
+					</div>
 				</div>
 			</div>
 		);

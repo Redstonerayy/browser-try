@@ -1,20 +1,13 @@
-var images = [
-    "black-hole.jpg",
-    "dark-souls-high.jpg",
-    "dark-souls-large.jpg",
-    "house-water.jpg",
-    "lost-settlement.jpg",
-    "manhattan.jpg",
-    "mountain-climber.jpg",
-    "new-york.webp",
-    "savanne.jpeg",
-    "skyline.jpg",
-    "tokyo-tower-night.jpg",
-    "waterfall.jpg",
-    "lunareclipse.jpg",
-    "pikachu.jpg",
-    "purpleeclipse.jpg"
-]
+const fs = require("fs");
+
+function readJSONSync(file){
+	let filedata = fs.readFileSync(file, {encoding: 'utf8'});
+    return JSON.parse(filedata);
+}
+
+let images = Object.values(readJSONSync("images.json"));
+
+
 let main = document.querySelector(".main");
 let img = images[Math.floor(Math.random()*images.length)];
 

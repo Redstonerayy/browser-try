@@ -56,7 +56,7 @@ class Tabs {
 		});
 		//no urls given, make new tab
 		if(this.urls.length == 0){
-			this.tabs.push( new Tab(`file://${__dirname}/html/newtab.html`, this.getNewTabId(true), 0, true));
+			this.makeNewTab(`file://${__dirname}/newtab.html`, true, false);
 		}
 
 		//make one tab go active
@@ -66,11 +66,19 @@ class Tabs {
 		/* add onclick eventListener to createTab, which creates 
 		a new Tab with newtab.html */
 		document.querySelector(".create-tab").addEventListener('click', () => {
-			this.tabs.push( new Tab(`file://${__dirname}/newtab.html`, this.getNewTabId(true), 0, true));
+			this.makeNewTab(`file://${__dirname}/newtab.html`, true, true, true);
 		});
 	}
 
 	//! Tab Management
+	makeNewTab(url, load, nodeintegration, active, tabnumber=null){
+		let tabid = this.getNewTabId(true);
+		this.tabs.push( new Tab(url, tabid, tabnumber, load, nodeintegration));
+		if(active){
+			this.makeTabActive(tabid + "-tab");
+		}
+	}
+
 	getNewTabId(countup){
 		/*
 		return an unused id; the Tabs class counts up and 

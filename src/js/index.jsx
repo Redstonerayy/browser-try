@@ -5,17 +5,14 @@
 ========================================================================== */
 
 //TODO Todolist
-// Make the settings
-//document main.js
 // Make the extensions 
 //-> session
 // Get information on cookies usw
-//make config.js file and a permanent new tab backgroud possible
-//better visuals
-//more hotkeys
 //multi window support
+//add regex for other urls
 //drop windows into each other
 //update docs
+// document main.js
 
 /* 
 * @use
@@ -50,7 +47,7 @@ ReactDOM.render(<ControlBar ref={(controlbar) => {
 }}/>, controlbarcontainer);
 
 //tabs object, which controls the window
-var tabs = new Tabs(["https://duckduckgo.com/?q=send+search+request+to+duckduckgo&t=bravened&ia=web"]);
+var tabs = new Tabs(["https://github.com/Redstonerayy/browser-try"]);
 
 
 //keyboard commands

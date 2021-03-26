@@ -93,13 +93,14 @@ webview - DOM element webview
 */
 
 class Tab {
-	constructor(url, id, tabnumber, load, options) {
+	constructor(url, id, tabnumber, load, nodeintegration, options) {
 		//init
 		this.url = url;
 		this.id = id + "-tab";
 		this.tabnumber = tabnumber;
 		this.tags = [];
 		this.loaded = load;
+		this.nodeintegration = nodeintegration;
 		this.domready = false;
 		//gui
 		this.favicon = "../img/loading.webp";
@@ -116,6 +117,10 @@ class Tab {
 		let webview = document.createElement("webview");
 		webview.setAttribute("id", id);
 		webview.setAttribute("src", url);
+		if(this.nodeintegration){
+			webview.setAttribute("nodeintegration", "");
+			webview.setAttribute("webpreferences", "contextIsolation=false");
+		}
 		return webview;
 	}
 
@@ -138,8 +143,7 @@ class Tab {
 		//add a TabGui to the tabdisplay
 		this.createTabView();
 		//webview
-		this.webview = this.createWebview(this.id + "-webview", this.url);
-		
+		this.webview = this.createWebview(this.id + "-webview", this.url);		
 
 		//event listeners to update TabGui title and favicon
 		this.webview.addEventListener('page-favicon-updated', (event) => {
@@ -151,6 +155,8 @@ class Tab {
 		});
 		this.webview.addEventListener('dom-ready', () => {
 			this.domready = true;
+			this.webview.openDevTools();
+
 			this.tabtitle = this.getTabTitle();
 			ReactDOM.render(
 				<TabGui tabid={this.id} title={this.tabtitle} favicon={this.favicon}/>
@@ -184,12 +190,14 @@ class Tab {
 			}
 			
 			if(this.domready){
-				if(this.webview.canGoForward() != this.canForward){
-					window.controlbar.changeForwardState(this.webview.canGoForward());
-				}
-	
-				if(this.webview.canGoBack() != this.canBack){
-					window.controlbar.changeBackState(this.webview.canGoBack());
+				if(this.id == tabs.activetab.id){
+					if(this.webview.canGoForward() != this.canForward){
+						window.controlbar.changeForwardState(this.webview.canGoForward());
+					}
+		
+					if(this.webview.canGoBack() != this.canBack){
+						window.controlbar.changeBackState(this.webview.canGoBack());
+					}
 				}
 			}
 		});

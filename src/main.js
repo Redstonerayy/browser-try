@@ -1,5 +1,6 @@
 //requirements
 const { app, BrowserWindow, ipcMain, Menu, MenuItem } = require('electron');
+const fs = require("fs");
 
 /* ==========================================================================
                               FUNCTIONS
@@ -23,6 +24,18 @@ function createWindow(width, height, minheight, minwidth, frame, maxunmax, load)
 	}
   	win.loadURL(load + `?` + maxunmax);
 	return win;
+}
+
+function readJSONSync(file){
+	let filedata = fs.readFileSync(file, {encoding: 'utf8'});
+    return JSON.parse(filedata);
+}
+
+function writeJSON(data, file){
+	let jsondata = JSON.stringify(data, null, 4);
+	fs.writeFile(file, jsondata, 'utf8', (err) => {
+		console.log(err);
+	});
 }
 
 /* ==========================================================================
@@ -71,6 +84,21 @@ class Windows {
 /* ==========================================================================
                               APP MAIN
 ========================================================================== */
+
+/* ------------------------------------------------
+				   SETTINGS
+				   
+-------------------------------------------------*/
+
+//read settings
+var settings = readJSONSync('settings.json');
+console.log(settings);
+
+/* ------------------------------------------------
+				   CREATE
+				   WINDOWS
+-------------------------------------------------*/
+
 //consts
 
 //vars
@@ -102,7 +130,6 @@ menu.append(new MenuItem({
 		role: 'toggleDevTools',
 		accelerator: process.platform === 'darwin' ? 'Cmd+Shift+I' : 'Ctrl+Shift+I',
 		click: () => { 
-			console.log('DevTools');
 		}
 	},
 	{
@@ -120,7 +147,6 @@ menu.append(new MenuItem({
 		label: 'reload',
 		accelerator: process.platform === 'darwin' ? 'F5' : 'F5',
 		click: () => { 
-			console.log('Reload');
 			let focuswindow = windows.getFocusedWindow();
 			focuswindow.webContents.send("F5", "");
 		}
