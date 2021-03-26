@@ -1,6 +1,7 @@
 //requirements
-const { app, BrowserWindow, ipcMain, Menu, MenuItem } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, MenuItem, session } = require('electron');
 const fs = require("fs");
+const path = require("path");
 
 /* ==========================================================================
                               FUNCTIONS
@@ -95,6 +96,20 @@ var settings = readJSONSync('settings.json');
 console.log(settings);
 
 /* ------------------------------------------------
+				   MAKe
+				   SESSION
+-------------------------------------------------*/
+
+app.whenReady().then(async () => {
+	const ses = session.fromPartition('persist:discover');
+	await ses.loadExtension(
+		path.join(__dirname, '../ublockorigin'),
+		{ allowFileAccess: true }
+	)
+	console.log(ses.getAllExtensions());
+});
+
+/* ------------------------------------------------
 				   CREATE
 				   WINDOWS
 -------------------------------------------------*/
@@ -140,10 +155,34 @@ menu.append(new MenuItem({
 	}]
 }));
 
+//Tabs
+//Reload webview
+menu.append(new MenuItem({
+	label: 'Tabs',
+	submenu: [
+	{
+		label: 'Switch',
+		accelerator: process.platform === 'darwin' ? 'Cmd+Tab' : 'Ctrl+Tab',
+		click: () => { 
+			let focuswindow = windows.getFocusedWindow();
+			focuswindow.webContents.send("CmdorCtrl+Tab", "");
+		}
+	},
+	{
+		label: 'New Tab',
+		accelerator: process.platform === 'darwin' ? 'Cmd+T' : 'Ctrl+T',
+		click: () => {
+			let focuswindow = windows.getFocusedWindow();
+			focuswindow.webContents.send("CmdorCtrl+T", "");
+		}
+	}]
+}));
+
 //Reload webview
 menu.append(new MenuItem({
 	label: 'Content',
-	submenu: [{
+	submenu: [
+	{
 		label: 'reload',
 		accelerator: process.platform === 'darwin' ? 'F5' : 'F5',
 		click: () => { 
@@ -152,7 +191,6 @@ menu.append(new MenuItem({
 		}
 	}]
 }));
-
 
 //set menu
 Menu.setApplicationMenu(menu);

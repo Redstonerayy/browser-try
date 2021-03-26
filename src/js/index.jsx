@@ -5,18 +5,15 @@
 ========================================================================== */
 
 //TODO Todolist
-// Make the extensions 
-//-> session
-// Get information on cookies usw
-//multi window support
+// extensions not working?
 //add regex for other urls
-//drop windows into each other
-//update docs
+// update docs
 // document main.js
 
 /* 
 * @use
--main file, creates the Tabs class which acts as the main controller of whole BrowserWindow
+-main file, creates the Tabs class which acts as the main 
+controller of whole BrowserWindow
 -dump the DOM objects from index.html into variables
 -render the Controlbar
 
@@ -53,6 +50,14 @@ var tabs = new Tabs(["https://github.com/Redstonerayy/browser-try"]);
 //keyboard commands
 ipcRenderer.on("F5", (message) => {
     tabs.activetab.reload();
+});
+
+ipcRenderer.on("CmdorCtrl+Tab", (message) => {
+    tabs.switchTab(true);
+});
+
+ipcRenderer.on("CmdorCtrl+T", (message) => {
+    tabs.makeNewTab(`file://${__dirname}/newtab.html`, true, false, true);
 });
 
 var keyboard = new KeyBoardInterface([KeyEnter]);

@@ -117,6 +117,7 @@ class Tab {
 		let webview = document.createElement("webview");
 		webview.setAttribute("id", id);
 		webview.setAttribute("src", url);
+		webview.setAttribute("partition", "persist:discover");
 		if(this.nodeintegration){
 			webview.setAttribute("nodeintegration", "");
 			webview.setAttribute("webpreferences", "contextIsolation=false");
@@ -155,7 +156,7 @@ class Tab {
 		});
 		this.webview.addEventListener('dom-ready', () => {
 			this.domready = true;
-			this.webview.openDevTools();
+			//this.webview.openDevTools();
 
 			this.tabtitle = this.getTabTitle();
 			ReactDOM.render(
