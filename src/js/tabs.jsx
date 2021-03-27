@@ -57,7 +57,7 @@ class Tabs {
 		});
 		//no urls given, make new tab
 		if(this.urls.length == 0){
-			this.makeNewTab(`file://${__dirname}/newtab.html`, true, false, true);
+			this.makeNewTab(`file://${__dirname}/newtab.html`, true, true, true);
 		}
 
 		//make one tab go active
@@ -67,7 +67,7 @@ class Tabs {
 		/* add onclick eventListener to createTab, which creates 
 		a new Tab with newtab.html */
 		document.querySelector(".create-tab").addEventListener('click', () => {
-			this.makeNewTab(`file://${__dirname}/newtab.html`, true, false, true);
+			this.makeNewTab(`file://${__dirname}/newtab.html`, true, true, true);
 		});
 	}
 

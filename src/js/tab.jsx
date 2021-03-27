@@ -139,13 +139,8 @@ class Tab {
 			, this.containerdiv
 		);
 	}
-
-	loadTab(){
-		//add a TabGui to the tabdisplay
-		this.createTabView();
-		//webview
-		this.webview = this.createWebview(this.id + "-webview", this.url);		
-
+	
+	addWebviewListeners(){
 		//event listeners to update TabGui title and favicon
 		this.webview.addEventListener('page-favicon-updated', (event) => {
 			this.favicon = event.favicons[0];
@@ -204,6 +199,32 @@ class Tab {
 		});
 	}
 
+	changeWebviewNodeintegration(nodeintegration, func){
+		this.nodeintegration = nodeintegration;
+		this.webview.remove();
+		
+		let link = window.controlbar.searchbarinput.value;
+		if(validURL(link)){
+			this.url = link;
+		} else {
+			this.url = `https://duckduckgo.com/?q=${link}&ia=web`;
+			window.controlbar.changeSearchBar(`https://duckduckgo.com/?q=${link}&ia=web`);
+		}
+
+		this.webview = this.createWebview(this.id + "-webview", this.url);
+		this.addWebviewListeners();
+		this.goActive();
+	}
+
+
+	loadTab(){
+		//add a TabGui to the tabdisplay
+		this.createTabView();
+		//webview
+		this.webview = this.createWebview(this.id + "-webview", this.url);		
+		this.addWebviewListeners();
+	}
+
 	destroyTabGui(){
 		//remove tabview
 		let tabcontainer = document.getElementById(`${this.id}-container`);
@@ -219,7 +240,7 @@ class Tab {
 
 	//! Tabcontrol
 	goActive(){
-    	window.controlbar.changeSearchBar(this.url);
+		window.controlbar.changeSearchBar(this.url);
 		this.tags.push("active");
 		if(!this.loaded){
 			this.loadTab();

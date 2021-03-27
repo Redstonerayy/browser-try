@@ -72,7 +72,11 @@ class ControlBar extends React.Component {
 
 	changeSearchBar(text, showhttp){
 		//change searchbar and eventually hide https://
-		this.searchbarinput.value = text;
+		if( !(text.includes("file://")) ){
+			this.searchbarinput.value = text;
+		} else {
+			this.searchbarinput.value = "";
+		}
 	}
 
 	changeForwardState(state){
@@ -116,7 +120,7 @@ class ControlBar extends React.Component {
 				</div>
 				<div className="search-bar-container">
 					<div className="search-bar">
-						<input type="text" name="" defaultValue=""></input>
+						<input type="text" name="" defaultValue="" placeholder="Search with DuckDuckGo"></input>
 					</div>
 				</div>
 				<div className="right-menu">
