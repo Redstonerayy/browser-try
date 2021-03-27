@@ -1,2 +1,2 @@
-@import url("https://cdn.jsdelivr.net/npm/segoe-fonts@1.0.1/segoe-fonts.min.css");*{margin:0;padding:0}html,body{width:100%;height:100%;font-family:"Segoe UI","Open Sans",Helvetica,sans-serif}.over{position:absolute;width:100%;height:calc(100% - 64px);top:64px}.webpage{position:relative;width:100%;height:calc(100% - 64px)}.webpage webview{width:100%;height:100%}
+@import url("https://cdn.jsdelivr.net/npm/segoe-fonts@1.0.1/segoe-fonts.min.css");*{margin:0;padding:0;font-family:"Segoe UI","Open Sans",Helvetica,sans-serif}html,body{width:100%;height:100%}.webpage{position:relative;width:100%;height:calc(100% - 64px)}.webpage webview{width:100%;height:100%}
 /*# sourceMappingURL=index.min.css.map */

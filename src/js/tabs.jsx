@@ -48,6 +48,7 @@ class Tabs {
 		this.ids = [];
 		this.idcounter = 0;
 		this.reuseids = [];
+		this.lastactive = undefined;
 		this.activetab = undefined;
 
 		//make new Tab(url) for each url
@@ -56,7 +57,7 @@ class Tabs {
 		});
 		//no urls given, make new tab
 		if(this.urls.length == 0){
-			this.tabs.push( new Tab(`file://${__dirname}/html/newtab.html`, this.getNewTabId(true), 0, true));
+			this.makeNewTab(`file://${__dirname}/newtab.html`, true, true, true);
 		}
 
 		//make one tab go active
@@ -66,11 +67,19 @@ class Tabs {
 		/* add onclick eventListener to createTab, which creates 
 		a new Tab with newtab.html */
 		document.querySelector(".create-tab").addEventListener('click', () => {
-			this.tabs.push( new Tab(`file://${__dirname}/newtab.html`, this.getNewTabId(true), 0, true));
+			this.makeNewTab(`file://${__dirname}/newtab.html`, true, true, true);
 		});
 	}
 
 	//! Tab Management
+	makeNewTab(url, load, nodeintegration, active, tabnumber=null){
+		let tabid = this.getNewTabId(true);
+		this.tabs.push( new Tab(url, tabid, tabnumber, load, nodeintegration));
+		if(active){
+			this.makeTabActive(tabid + "-tab");
+		}
+	}
+
 	getNewTabId(countup){
 		/*
 		return an unused id; the Tabs class counts up and 
@@ -89,9 +98,17 @@ class Tabs {
 
 	makeTabActive(tabid){
 		this.activetab.loseActive();
+		this.lastactive = this.activetab;
 		//filters this.tabs for the tabid 
 		this.activetab = this.tabs.filter(tab => { return tab.id == tabid })[0];
 		this.activetab.goActive();
+	}
+
+	switchTab(lastactive){
+		if(lastactive){
+			this.makeTabActive(this.lastactive.id);
+		} else {
+		}
 	}
 
 	addReuseId(id){

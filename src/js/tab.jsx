@@ -93,13 +93,15 @@ webview - DOM element webview
 */
 
 class Tab {
-	constructor(url, id, tabnumber, load, options) {
+	constructor(url, id, tabnumber, load, nodeintegration, options) {
 		//init
 		this.url = url;
 		this.id = id + "-tab";
 		this.tabnumber = tabnumber;
 		this.tags = [];
 		this.loaded = load;
+		this.nodeintegration = nodeintegration;
+		this.domready = false;
 		//gui
 		this.favicon = "../img/loading.webp";
 		this.tabtitle = "Webpage Loading";
@@ -115,6 +117,11 @@ class Tab {
 		let webview = document.createElement("webview");
 		webview.setAttribute("id", id);
 		webview.setAttribute("src", url);
+		webview.setAttribute("partition", "persist:discover");
+		if(this.nodeintegration){
+			webview.setAttribute("nodeintegration", "");
+			webview.setAttribute("webpreferences", "contextIsolation=false");
+		}
 		return webview;
 	}
 
@@ -132,13 +139,8 @@ class Tab {
 			, this.containerdiv
 		);
 	}
-
-	loadTab(){
-		//add a TabGui to the tabdisplay
-		this.createTabView();
-		//webview
-		this.webview = this.createWebview(this.id + "-webview", this.url);
-		
+	
+	addWebviewListeners(){
 		//event listeners to update TabGui title and favicon
 		this.webview.addEventListener('page-favicon-updated', (event) => {
 			this.favicon = event.favicons[0];
@@ -148,12 +150,79 @@ class Tab {
 			);
 		});
 		this.webview.addEventListener('dom-ready', () => {
+			this.domready = true;
+			//this.webview.openDevTools();
+
 			this.tabtitle = this.getTabTitle();
 			ReactDOM.render(
 				<TabGui tabid={this.id} title={this.tabtitle} favicon={this.favicon}/>
 				, this.containerdiv
 			);
+
+			//blur forward and back button
+			if(!this.webview.canGoForward()){
+				window.controlbar.changeForwardState(false);
+				this.canForward = this.webview.canGoForward();
+			}
+			if(!this.webview.canGoBack()){
+				window.controlbar.changeBackState(false);
+				this.canBack = this.webview.canGoBack();
+			} 
 		});
+
+
+		//event listener to update searchbar
+		//normal user navigation
+		this.webview.addEventListener('will-navigate', (event) => {
+			if(this.id == tabs.activetab.id){
+				window.controlbar.changeSearchBar(event.url);
+			}
+		});
+
+		//will-navigate will not trigger for goBack() or goForward()
+		this.webview.addEventListener('did-navigate', (event) => {
+			if(this.id == tabs.activetab.id){
+				window.controlbar.changeSearchBar(event.url);
+			}
+			
+			if(this.domready){
+				if(this.id == tabs.activetab.id){
+					if(this.webview.canGoForward() != this.canForward){
+						window.controlbar.changeForwardState(this.webview.canGoForward());
+					}
+		
+					if(this.webview.canGoBack() != this.canBack){
+						window.controlbar.changeBackState(this.webview.canGoBack());
+					}
+				}
+			}
+		});
+	}
+
+	changeWebviewNodeintegration(nodeintegration, func){
+		this.nodeintegration = nodeintegration;
+		this.webview.remove();
+		
+		let link = window.controlbar.searchbarinput.value;
+		if(validURL(link)){
+			this.url = link;
+		} else {
+			this.url = `https://duckduckgo.com/?q=${link}&ia=web`;
+			window.controlbar.changeSearchBar(`https://duckduckgo.com/?q=${link}&ia=web`);
+		}
+
+		this.webview = this.createWebview(this.id + "-webview", this.url);
+		this.addWebviewListeners();
+		this.goActive();
+	}
+
+
+	loadTab(){
+		//add a TabGui to the tabdisplay
+		this.createTabView();
+		//webview
+		this.webview = this.createWebview(this.id + "-webview", this.url);		
+		this.addWebviewListeners();
 	}
 
 	destroyTabGui(){
@@ -171,7 +240,7 @@ class Tab {
 
 	//! Tabcontrol
 	goActive(){
-    	window.controlbar.changeSearchBar(this.url);
+		window.controlbar.changeSearchBar(this.url);
 		this.tags.push("active");
 		if(!this.loaded){
 			this.loadTab();

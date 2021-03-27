@@ -41,26 +41,18 @@ const KeyEnter = new Key(
     false,
     false,
     () => {
-        let link = window.controlbar.searchbarinput.value;
         if(window.controlbar.searchbarinput == document.activeElement){
-            if(validURL(link)){
-                console.log(validURL(link));
-                tabs.activetab.webview.loadURL(link);
+            if(tabs.activetab.nodeintegration){
+                tabs.activetab.changeWebviewNodeintegration(false);                
             } else {
-                tabs.activetab.webview.loadURL(`https://duckduckgo.com/?q=${link}&ia=web`);
-                window.controlbar.changeSearchBar(`https://duckduckgo.com/?q=${link}&ia=web`);
+                let link = window.controlbar.searchbarinput.value;
+                if(validURL(link)){
+                    tabs.activetab.webview.loadURL(link);
+                } else {
+                    tabs.activetab.webview.loadURL(`https://duckduckgo.com/?q=${link}&ia=web`);
+                    window.controlbar.changeSearchBar(`https://duckduckgo.com/?q=${link}&ia=web`);
+                }
             }
         }
     }
-)
-
-const KeyF5 = new Key(
-    `Reload Page`,
-    "F5",
-    false,
-    false,
-    () => {
-        console.log("reload");
-        tabs.activetab.reload();
-    }
-)
+);

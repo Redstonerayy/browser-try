@@ -44,8 +44,10 @@ class ControlBar extends React.Component {
 	  	this.reload = document.querySelector('.reload');
 	  	this.searchbar = document.querySelector('.search-bar');		
 	  	this.searchbarinput = document.querySelector('.search-bar > input');
+		this.settings = document.querySelector(".settings");
 
 		//add eventlisteners
+		//tab
 		this.back.addEventListener('click', () => {
 			tabs.controlBarEvent('back');
 		});
@@ -61,24 +63,55 @@ class ControlBar extends React.Component {
 		this.searchbarinput.addEventListener('focusout', () => {
 			this.searchbar.style.border = "";
 		});
+
+		//browser
+		this.settings.addEventListener('click', () => {
+			tabs.makeNewTab("settings.html", true, true, true);
+		});
   	}
 
 	changeSearchBar(text, showhttp){
 		//change searchbar and eventually hide https://
-		this.searchbarinput.value = text;
+		if( !(text.includes("file://")) ){
+			this.searchbarinput.value = text;
+		} else {
+			this.searchbarinput.value = "";
+		}
+	}
+
+	changeForwardState(state){
+		if(state){
+			if(!this.forward.className.includes("hover")){
+				this.forward.className = this.forward.className.replace(" inactive", " hover");
+			} else {//nothing
+			}
+		} else {
+			this.forward.className = this.forward.className.replace(" hover", " inactive");
+		}
+	}
+
+	changeBackState(state){
+		if(state){
+			if(!this.back.className.includes("hover")){
+				this.back.className = this.back.className.replace(" inactive", " hover");
+			} else {//nothing
+			}
+		} else {
+			this.back.className = this.back.className.replace(" hover", " inactive");
+		}
 	}
 
 	render(){
 		return(
 			<div className="controlbar">
 				<div className="left-menu">
-					<div className="back icon">
+					<div className="back icon hover">
 						<img src="../img/caret-left.svg" alt=""></img>
 					</div>
-					<div className="forward icon">
+					<div className="forward icon hover">
 						<img src="../img/caret-right.svg" alt=""></img>
 					</div>
-					<div className="reload icon">
+					<div className="reload icon hover">
 						<img src="../img/arrow-clockwise.svg" alt=""></img>
 					</div>
 				</div>
@@ -87,11 +120,13 @@ class ControlBar extends React.Component {
 				</div>
 				<div className="search-bar-container">
 					<div className="search-bar">
-						<input type="text" name="" defaultValue=""></input>
+						<input type="text" name="" defaultValue="" placeholder="Search with DuckDuckGo"></input>
 					</div>
 				</div>
 				<div className="right-menu">
-					<img src="../img/list.svg" alt=""></img>
+					<div className="settings">
+						<img src="../img/list.svg" alt=""></img>
+					</div>
 				</div>
 			</div>
 		);

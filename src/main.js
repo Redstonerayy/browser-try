@@ -1,5 +1,7 @@
 //requirements
-const { app, BrowserWindow, ipcMain, webContents } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, MenuItem, session } = require('electron');
+const fs = require("fs");
+const path = require("path");
 
 /* ==========================================================================
                               FUNCTIONS
@@ -25,12 +27,24 @@ function createWindow(width, height, minheight, minwidth, frame, maxunmax, load)
 	return win;
 }
 
+function readJSONSync(file){
+	let filedata = fs.readFileSync(file, {encoding: 'utf8'});
+    return JSON.parse(filedata);
+}
+
+function writeJSON(data, file){
+	let jsondata = JSON.stringify(data, null, 4);
+	fs.writeFile(file, jsondata, 'utf8', (err) => {
+		console.log(err);
+	});
+}
+
 /* ==========================================================================
                               CLASSES
 ========================================================================== */
 
 class Window {
-	constructor(width, height, load, tabs=null, windowmax="max", minheight=100, minwidth=500) {
+	constructor(width, height, load, id, tabs=null, windowmax="max", minheight=100, minwidth=500) {
 		this.window = createWindow(width, height, minheight, minwidth, false, windowmax, load);
 		this.tabgroups = [];
 		this.id = windows.windows.length;
@@ -40,40 +54,73 @@ class Window {
 class Windows {
 	constructor() {
 		this.windows = [];
-		this.tabnumber = 0;
+		this.idcounter = 0;
+		this.reuseids = [];
 	}
 
-	newwindow(){
-		this.windows.push(new Window(700, 900, `file://${__dirname}/html/index.html`))
+	newWindow(){
+		this.windows.push( new Window(700, 900, `file://${__dirname}/html/index.html`, this.getNewWindowId()) );
 	}
 
-	updatetabnumber(){
-
+	getNewWindowId(){
+		if(this.reuseids.length > 0){
+			return this.reuseids.splice(-1, 1);
+		} else {
+			this.idcounter += 1;
+			return this.idcounter - 1;
+		}
 	}
 
-	getwindowbybrowserwindowid(){
-
-	}
-
-	getwindowbyid(){
-
-	}
-
-	getnumberoftabsallwindows(){
-		return this.tabnumber;
+	getFocusedWindow(){
+		let activewindow = null;
+		BrowserWindow.getAllWindows().forEach(browserwindow => {
+			if(browserwindow.isFocused()){
+				activewindow = browserwindow;
+			}
+		});
+		return activewindow;
 	}
 }
 
 /* ==========================================================================
                               APP MAIN
 ========================================================================== */
+
+/* ------------------------------------------------
+				   SETTINGS
+				   
+-------------------------------------------------*/
+
+//read settings
+var settings = readJSONSync('settings.json');
+console.log(settings);
+
+/* ------------------------------------------------
+				   MAKe
+				   SESSION
+-------------------------------------------------*/
+
+app.whenReady().then(async () => {
+	const ses = session.fromPartition('persist:discover');
+	await ses.loadExtension(
+		path.join(__dirname, '../ublockorigin'),
+		{ allowFileAccess: true }
+	)
+	console.log(ses.getAllExtensions());
+});
+
+/* ------------------------------------------------
+				   CREATE
+				   WINDOWS
+-------------------------------------------------*/
+
 //consts
 
 //vars
 var windows = new Windows();
 
 app.whenReady().then(() => {
-	windows.newwindow();
+	windows.newWindow();
 });
 
 app.on('window-all-closed', () => {
@@ -81,6 +128,72 @@ app.on('window-all-closed', () => {
 		app.quit();
 	}
 });
+
+/* ------------------------------------------------
+				   KEYBOARD/MENUITEMS
+				   
+-------------------------------------------------*/
+
+const menu = new Menu()
+//KEYS
+
+//DevTools, Quit
+menu.append(new MenuItem({
+	label: 'Window',
+	submenu: [
+	{
+		role: 'toggleDevTools',
+		accelerator: process.platform === 'darwin' ? 'Cmd+Shift+I' : 'Ctrl+Shift+I',
+		click: () => { 
+		}
+	},
+	{
+		role: 'quit',
+		accelerator: process.platform === 'darwin' ? 'Alt+F4' : 'Alt+F4',
+		click: () => {
+		}
+	}]
+}));
+
+//Tabs
+//Reload webview
+menu.append(new MenuItem({
+	label: 'Tabs',
+	submenu: [
+	{
+		label: 'Switch',
+		accelerator: process.platform === 'darwin' ? 'Cmd+Tab' : 'Ctrl+Tab',
+		click: () => { 
+			let focuswindow = windows.getFocusedWindow();
+			focuswindow.webContents.send("CmdorCtrl+Tab", "");
+		}
+	},
+	{
+		label: 'New Tab',
+		accelerator: process.platform === 'darwin' ? 'Cmd+T' : 'Ctrl+T',
+		click: () => {
+			let focuswindow = windows.getFocusedWindow();
+			focuswindow.webContents.send("CmdorCtrl+T", "");
+		}
+	}]
+}));
+
+//Reload webview
+menu.append(new MenuItem({
+	label: 'Content',
+	submenu: [
+	{
+		label: 'reload',
+		accelerator: process.platform === 'darwin' ? 'F5' : 'F5',
+		click: () => { 
+			let focuswindow = windows.getFocusedWindow();
+			focuswindow.webContents.send("F5", "");
+		}
+	}]
+}));
+
+//set menu
+Menu.setApplicationMenu(menu);
 
 /* ==========================================================================
                               HANDLE WINDOW CONTROLS

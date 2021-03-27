@@ -26,8 +26,12 @@
 		min-width: 24px
 		border-radius: 4px
 
+	.hover
 		&:hover
 			background: #515158
+
+	.inactive
+		opacity: 0.5
 
 	.back
 		img
@@ -102,8 +106,18 @@
 	display: flex
 	justify-content: flex-end
 	align-items: center
+	padding-right: 10px
 
-	img
-		margin-right: 10px
+	.settings
+		display: flex
+		justify-content: center
+		align-items: center
+		height: 22px
 		width: 18px
-		height: 18px
+
+		&:hover
+			background: #515158
+
+		img
+			width: 18px
+			height: 16px
